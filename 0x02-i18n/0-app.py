@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
-'''
-    Module for Babel i18n.
-'''
+"""
+0-app.py
+Basic Flask app
+"""
 
 from flask import Flask, render_template
 
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__)
 
 
-@app.route('/', methods=['GET'], strict_slashes=False)
-def helloWorld() -> str:
-    '''
-        Render template for Babel usage.
-    '''
-    return render_template('0-index.html')
+@app.route('/')
+def index():
+    """Render index.html template."""
+    return render_template(
+        '0-index.html',
+        title='Welcome to Holberton',
+        header='Hello world')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port='5000')
