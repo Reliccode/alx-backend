@@ -3,6 +3,7 @@
     Use Babel to get user locale.
 '''
 
+
 from flask_babel import Babel
 from flask import Flask, render_template, request
 
