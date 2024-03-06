@@ -7,37 +7,39 @@
  */
 const createPushNotificationsJobs = (jobs, queue) => {
   // Check if jobs is an array
-  if (!Array.isArray(jobs)) {
+  if (!(jobs instanceof Array)) {
     throw new Error('Jobs is not an array');
   }
 
-  // Loop through each job and create a job in the queue
-  jobs.forEach((jobData) => {
+  // Iterate through each job in the jobs array
+  for (const job of jobs) {
     // Create a new job in the push_notification_code_3 queue
-    const job = queue.create('push_notification_code_3', jobData)
-      .save((err) => {
-        if (err) {
-          console.error('Error creating job:', err);
-          return;
-        }
-        console.log(`Notification job created: ${job.id}`);
-      });
+    const newJob = queue.create('push_notification_code_3', job);
 
     // Listen for job completion
-    job.on('complete', () => {
-      console.log(`Notification job ${job.id} completed`);
+    newJob.on('complete', () => {
+      console.log(`Notification job ${newJob.id} completed`);
     });
 
     // Listen for job failure
-    job.on('failed', (err) => {
-      console.error(`Notification job ${job.id} failed: ${err}`);
+    newJob.on('failed', (err) => {
+      console.log(`Notification job ${newJob.id} failed: ${err.message || err.toString()}`);
     });
 
     // Listen for job progress
-    job.on('progress', (progress) => {
-      console.log(`Notification job ${job.id} ${progress}% complete`);
+    newJob.on('progress', (progress) => {
+      console.log(`Notification job ${newJob.id} ${progress}% complete`);
     });
-  });
+
+    // Save the job to the queue
+    newJob.save((err) => {
+      if (err) {
+        console.error('Error creating job:', err);
+        return;
+      }
+      console.log(`Notification job created: ${newJob.id}`);
+    });
+  }
 };
 
-export default createPushNotificationsJobs;
+module.exports = createPushNotificationsJobs;
